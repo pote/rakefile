@@ -4,6 +4,7 @@ namespace :db do
   DATABASE_URL = ENV['DATABASE_URL'] || 'sqlite://db/database.db'
 
   namespace :migrations do
+    desc 'Creates a new migration in db/migrations'
     task :new, :name do |t, args|
       name = ARGV.last
       migrations_dir = File.join("db", "migrations")
@@ -25,6 +26,7 @@ namespace :db do
       task name.to_sym {}
     end
 
+    desc 'Runs all migrations.'
     task :apply do
       require 'sequel'
       Sequel.extension :migration
@@ -38,6 +40,7 @@ namespace :db do
     end
   end
 
+  desc 'Dumps schema into db/schema.rb'
   task :schema do
     require 'sequel'
     Sequel.extension :schema_dumper
