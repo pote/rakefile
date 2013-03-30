@@ -1,0 +1,58 @@
+task default: ['db:migrations:apply', :test]
+
+namespace :db do
+  DATABASE_URL = ENV['DATABASE_URL'] || 'sqlite://db/database.db'
+
+  namespace :migrations do
+    task :new, :name do |t, args|
+      name = ARGV.last
+      migrations_dir = File.join("db", "migrations")
+      version ||= Time.now.utc.strftime("%Y%m%d%H%M%S")
+      filename = "#{version}_#{name}.rb"
+
+      FileUtils.mkdir_p(migrations_dir)
+
+      open(File.join(migrations_dir, filename), 'w') do |f|
+        f << (<<-EOS).gsub("      ", "")
+        Sequel.migration do
+          change do
+          end
+        end
+        EOS
+      end
+
+      puts ">> Wrote #{ migrations_dir}/#{ filename }."
+      task name.to_sym {}
+    end
+
+    task :apply do
+      require 'sequel'
+      Sequel.extension :migration
+      db = Sequel.connect(DATABASE_URL)
+
+      puts '>> Running migrations...'
+      Sequel::Migrator.apply(db, 'db/migrations')
+      puts '>> All done.'
+
+      Rake::Task['db:schema'].invoke
+    end
+  end
+
+  task :schema do
+    require 'sequel'
+    Sequel.extension :schema_dumper
+    db = Sequel.connect(DATABASE_URL, :test => true)
+
+    puts '>> Dumping schema...'
+    open('db/schema.rb', 'w') do |f|
+      f << db.dump_schema_migration(:same_db => false)
+    end
+    puts '>> All done.'
+  end
+end
+
+task :test do
+  puts '>> Fake tests'
+  12.times { print '.'; sleep 0.1 }
+  puts ''
+end
