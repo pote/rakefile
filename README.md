@@ -1,6 +1,6 @@
 # Rakefile
 
-To be used with `[gn](http://lucasefe.github.com/gn/)'.
+To be used with the [gn](http://lucasefe.github.com/gn/) file generator.
 
 ### What is it?
 
