@@ -22,7 +22,7 @@ end
         EOS
       end
 
-      puts ">> Wrote #{ migrations_dir}/#{ filename }."
+      puts ">> Wrote #{ migrations_dir}/#{ filename }"
       task name.to_sym {}
     end
 
