@@ -52,6 +52,17 @@ end
     end
     puts '>> All done.'
   end
+
+  desc 'Deletes the database, use with care'
+  task :drop do
+    require 'sequel'
+    db = Sequel.connect(DATABASE_URL)
+
+    puts '>> Dropping all tables, if you screwed up cancel NOW. (5 second sleep)'
+    sleep 5
+    db.tables.each { |table| db.drop_table(table) }
+    puts '>> All done.'
+  end
 end
 
 task :test do
