@@ -2,6 +2,7 @@ task default: ['db:migrations:apply', :test]
 
 namespace :db do
   DATABASE_URL = ENV['DATABASE_URL'] || 'sqlite://db/database.db'
+  puts ">> Running task on database #{ DATABASE_URL }"
 
   namespace :migrations do
     desc 'Creates a new migration in db/migrations'
